@@ -1,7 +1,7 @@
 import pygame
 import os
 
-
+# Начало программы
 pygame.init()
 
 W, H = 800, 447
