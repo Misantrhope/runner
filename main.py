@@ -1,7 +1,9 @@
 import pygame
 import os
+from objects import Player, Spike, Saw
+import random
 
-
+# Начало программы
 pygame.init()
 
 W, H = 800, 447
@@ -15,83 +17,28 @@ bg_x2 = bg.get_width()
 clock = pygame.time.Clock()
 
 
-class Player:
-    run = [pygame.image.load(os.path.join('data\images', str(x) + '.png')) for x in range(8, 16)]
-    jump = [pygame.image.load(os.path.join('data\images', str(x) + '.png')) for x in range(1, 8)]
-    slide = [pygame.image.load(os.path.join('data\images', 'S1.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S2.png')),
-             pygame.image.load(os.path.join('data\images', 'S3.png')),
-             pygame.image.load(os.path.join('data\images', 'S4.png')),
-             pygame.image.load(os.path.join('data\images', 'S5.png'))]
-    jump_list = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
-                4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1,
-                -1, -1, -1, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3,
-                -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4]
-
-    # Массив для скорости прыжка
-
-    def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.jumping = False
-        self.sliding = False
-        self.slide_count = 0
-        self.jump_count = 0
-        self.run_count = 0
-        self.slide_up = False
-
-    def draw(self, win):
-        if self.jumping:
-            self.y -= self.jump_list[self.jump_count] * 1.2
-            win.blit(self.jump[self.jump_count // 18], (self.x, self.y))
-            self.jump_count += 1
-            if self.jump_count > 108:
-                self.jump_count = 0
-                self.jumping = False
-                self.runCount = 0
-        elif self.sliding or self.slide_up:
-            if self.slide_count < 20:
-                self.y += 1
-            elif self.slide_count == 80:
-                self.y -= 19
-                self.sliding = False
-                self.slide_up = True
-            if self.slide_count >= 110:
-                self.slide_count = 0
-                self.slide_up = False
-                self.run_count = 0
-            win.blit(self.slide[self.slide_count // 10], (self.x, self.y))
-            self.slide_count += 1
-
-        else:
-            if self.run_count > 42:
-                self.run_count = 0
-            win.blit(self.run[self.run_count // 6], (self.x, self.y))
-            self.run_count += 1
-
-
 def redraw_window():
     win.blit(bg, (bg_x1, 0))
     win.blit(bg, (bg_x2, 0))
     runner.draw(win)
+    for i in objects:
+        i.draw(win)
     pygame.display.update()
 
 
 # main
 runner = Player(200, 313, 64, 64)
-pygame.time.set_timer(USEREVENT + 1, 500)
+pygame.time.set_timer(pygame.USEREVENT + 1, 500)
+pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(2500, 4500))
 speed = 30
 run = True
+objects = []
 while run:
     redraw_window()
+    for i in objects:
+        i.x -= 1.4
+        if i.x < -i.width * -1:
+            objects.pop(objects.index(i))
     clock.tick(speed)
     bg_x1 -= 1.4
     bg_x2 -= 1.4
@@ -104,16 +51,20 @@ while run:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
-        if event.type == USEREVENT + 1:
+        if event.type == pygame.USEREVENT + 1:
             speed += 1
+        if event.type == pygame.USEREVENT + 2:
+            r = random.randrange(0, 2)
+            if r == 0:
+                objects.append(Saw(810, 310, 64, 64))
+            else:
+                objects.append(Spike(810, 0, 48, 320))
 
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-        if not(runner.jumping):
+        if not (runner.jumping):
             runner.jumping = True
     if keys[pygame.K_DOWN]:
-        if not(runner.sliding):
+        if not (runner.sliding):
             runner.sliding = True
-
-
