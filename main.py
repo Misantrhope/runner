@@ -1,19 +1,24 @@
 import pygame
 import os
-from objects import Player, Spike, Saw
+import sys
 import random
+sys.path.append('data/objects')
+from data.objects.player import Player
+from data.objects.saw import Saw
+from data.objects.spike import Spike
+
 
 # Начало программы
 pygame.init()
 
 W, H = 800, 447
 win = pygame.display.set_mode((W, H))
-pygame.display.set_caption('Side Scroller')
+pygame.display.set_caption('runner')
 
 bg = pygame.image.load('data\images\loop.png').convert()
 bg_x1 = 0
 bg_x2 = bg.get_width()
-
+run = False
 clock = pygame.time.Clock()
 
 
@@ -26,12 +31,37 @@ def redraw_window():
     pygame.display.update()
 
 
+def start():
+    a = True
+    intro_text = ["Чтобы начать игру нажмите на левую кнопку мыши", ""]
+    fon = pygame.image.load(os.path.join('data\images', 'loop.png'))
+    win.blit(fon, (0, 0))
+    font = pygame.font.Font(None, 30)
+    text_coord = 50
+    for line in intro_text:
+        string_rendered = font.render(line, 1, pygame.Color('black'))
+        intro_rect = string_rendered.get_rect()
+        text_coord += 10
+        intro_rect.top = text_coord
+        intro_rect.x = 10
+        text_coord += intro_rect.height
+        win.blit(string_rendered, intro_rect)
+    global run
+    while a:
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                run = True
+                a = False
+        pygame.display.update()
+
+
 # main
+
 runner = Player(200, 313, 64, 64)
 pygame.time.set_timer(pygame.USEREVENT + 1, 500)
 pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(2500, 4500))
 speed = 30
-run = True
+start()
 objects = []
 while run:
     redraw_window()
