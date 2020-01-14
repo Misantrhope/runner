@@ -1,24 +1,24 @@
 import pygame
 import os
 import sys
-import random
 sys.path.append('data/objects')
 from data.objects.player import Player
 from data.objects.saw import Saw
 from data.objects.spike import Spike
 
+import random
 
 # Начало программы
 pygame.init()
 
 W, H = 800, 447
 win = pygame.display.set_mode((W, H))
-pygame.display.set_caption('runner')
+pygame.display.set_caption('Side Scroller')
 
 bg = pygame.image.load('data\images\loop.png').convert()
 bg_x1 = 0
 bg_x2 = bg.get_width()
-run = False
+
 clock = pygame.time.Clock()
 
 
@@ -29,6 +29,8 @@ def redraw_window():
     for i in objects:
         i.draw(win)
     pygame.display.update()
+
+
 
 
 def start():
@@ -56,12 +58,13 @@ def start():
 
 
 # main
-
+start()
 runner = Player(200, 313, 64, 64)
 pygame.time.set_timer(pygame.USEREVENT + 1, 500)
 pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(2500, 4500))
 speed = 30
-start()
+
+
 objects = []
 while run:
     redraw_window()
