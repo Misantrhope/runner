@@ -21,4 +21,11 @@ class Saw():
             self.count = 0
         win.blit(pygame.transform.scale(self.img[self.count // 2], (64, 64)), (self.x, self.y))
         self.count += 1
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+        #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+    def collide(self, rect):
+        # Проверяем если x координата игрока сталкиваеться с чем либо.
+        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
+            # Проверяем если y координата игрока сталкиваеться с чем либо.
+            if rect[1] + rect[3] > self.hitbox[1]:
+                return True
+            return False
