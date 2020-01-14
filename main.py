@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+
 sys.path.append('data/objects')
 from data.objects.player import Player
 from data.objects.saw import Saw
@@ -11,8 +12,8 @@ import random
 # Начало программы
 pygame.init()
 
-W, H = 800, 447
-win = pygame.display.set_mode((W, H))
+w, h = 800, 447
+win = pygame.display.set_mode((w, h))
 pygame.display.set_caption('Side Scroller')
 
 bg = pygame.image.load('data\images\loop.png').convert()
@@ -22,24 +23,70 @@ bg_x2 = bg.get_width()
 clock = pygame.time.Clock()
 
 
+def update_scores():
+    f = open('data/scores.txt', 'r')
+    file = f.readlines()
+    last_score = int(file[0])
+
+    if last_score < int(score):
+        f.close()
+        file = open('data/scores.txt', 'w')
+        file.write(str(score))
+        file.close()
+
+        return score
+
+    return last_score
+
+
 def redraw_window():
     win.blit(bg, (bg_x1, 0))
     win.blit(bg, (bg_x2, 0))
     runner.draw(win)
     for i in objects:
         i.draw(win)
+    font = pygame.font.SysFont('comicsans', 30)
+    text = font.render('Score:' + str(score),1, (255, 255, 255))
+    win.blit(text,(700,10))
     pygame.display.update()
 
 
+def end():
+    global pause, objects, speed, score
+    pause = 0
+    objects = []
+    speed = 30
+    run = True
+    while run:
+        pygame.time.delay(100)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                run = False
+        win.blit(bg, (0, 0))
+        font_2 = pygame.font.SysFont('comicsans', 80)
+        previous_score = font_2.render('Рекорд:' + str(update_scores()), 1, (255, 255, 255))
+        win.blit(previous_score, (w / 2 - previous_score.get_width() / 2, 200))
+        new_score = font_2.render('Счёт:' + str(score), 1, (255, 255, 255))
+        win.blit(new_score, (w / 2 - new_score.get_width() / 2, 320))
+        pygame.display.update()
+
+    score = 0
+    runner.game_over = False
 
 
 def start():
     a = True
-    intro_text = ["Чтобы начать игру нажмите на левую кнопку мыши", ""]
+    intro_text = [ "",
+                  "Spacebar - прыжок",
+                  "S - проскользить",
+                  'Нажмите любую кнопку мыши для запуска игры']
     fon = pygame.image.load(os.path.join('data\images', 'loop.png'))
     win.blit(fon, (0, 0))
     font = pygame.font.Font(None, 30)
-    text_coord = 50
+    text_coord = 170
     for line in intro_text:
         string_rendered = font.render(line, 1, pygame.Color('black'))
         intro_rect = string_rendered.get_rect()
@@ -48,12 +95,16 @@ def start():
         intro_rect.x = 10
         text_coord += intro_rect.height
         win.blit(string_rendered, intro_rect)
-    global run
+    global running
     while a:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                run = True
+                running = True
                 a = False
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
         pygame.display.update()
 
 
@@ -61,18 +112,30 @@ def start():
 start()
 runner = Player(200, 313, 64, 64)
 pygame.time.set_timer(pygame.USEREVENT + 1, 500)
-pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(2500, 4500))
+pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(3000, 5000))
 speed = 30
 
+pause = 0
+fall_speed = 0
 
 objects = []
-while run:
-    redraw_window()
+while running:
+    score = speed // 5 - 6
+    # Т.к изначально speed = 30 , а 30/5 = 6 , то счёт начнётся с 6, поэтому вычтем 6 изначально.
+    if pause > 0:
+        pause += 1
+        if pause > fall_speed * 2:
+            end()
     for i in objects:
+        if i.collide(runner.hitbox):
+            runner.game_over = True
+            if pause == 0:
+                fall_speed = speed
+                pause = 1
+
         i.x -= 1.4
         if i.x < -i.width * -1:
             objects.pop(objects.index(i))
-    clock.tick(speed)
     bg_x1 -= 1.4
     bg_x2 -= 1.4
     if bg_x1 < bg.get_width() * - 1:
@@ -98,6 +161,8 @@ while run:
     if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
         if not (runner.jumping):
             runner.jumping = True
-    if keys[pygame.K_DOWN]:
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
         if not (runner.sliding):
             runner.sliding = True
+    clock.tick(speed)
+    redraw_window()
