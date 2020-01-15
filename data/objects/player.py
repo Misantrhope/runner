@@ -52,16 +52,16 @@ class Player:
                 self.run_count = 0
             self.hitbox = (self.x + 4, self.y, self.width - 24, self.height - 10)
         elif self.sliding or self.slide_up:
-            if self.slide_count < 20:
-                self.y += 1
+            if self.slide_count < 10:
+                self.y += 2
             elif self.slide_count == 80:
-                self.y -= 19
+                self.y -= 18
                 self.sliding = False
                 self.slide_up = True
-            elif self.slide_count > 20 and self.slide_count < 80:
+            elif self.slide_count > 10 and self.slide_count < 80:
                 self.hitbox = (self.x, self.y + 3, self.width - 8, self.height - 35)
 
-            if self.slide_count >= 110:
+            if self.slide_count >= 90:
                 self.slide_count = 0
                 self.slide_up = False
                 self.run_count = 0
@@ -76,8 +76,8 @@ class Player:
             win.blit(self.run[self.run_count // 6], (self.x, self.y))
             # Отдаём на каждую картинку run 6 фреймов
             self.run_count += 1
-            self.hitbox = (self.x + 4, self.y, self.width - 24, self.height - 13)
-        #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+            self.hitbox = (self.x + 4, self.y - 2, self.width - 24, self.height - 13)
+        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
 
 

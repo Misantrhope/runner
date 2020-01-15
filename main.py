@@ -46,8 +46,8 @@ def redraw_window():
     for i in objects:
         i.draw(win)
     font = pygame.font.SysFont('comicsans', 30)
-    text = font.render('Score:' + str(score),1, (255, 255, 255))
-    win.blit(text,(700,10))
+    text = font.render('Score:' + str(score), 1, (255, 255, 255))
+    win.blit(text, (700, 10))
     pygame.display.update()
 
 
@@ -55,10 +55,9 @@ def end():
     global pause, objects, speed, score
     pause = 0
     objects = []
-    speed = 30
+    speed = 70
     run = True
     while run:
-        pygame.time.delay(100)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -79,7 +78,7 @@ def end():
 
 def start():
     a = True
-    intro_text = [ "",
+    intro_text = ["",
                   "Spacebar - прыжок",
                   "S - проскользить",
                   'Нажмите любую кнопку мыши для запуска игры']
@@ -113,18 +112,18 @@ start()
 runner = Player(200, 313, 64, 64)
 pygame.time.set_timer(pygame.USEREVENT + 1, 500)
 pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(3000, 5000))
-speed = 30
+speed = 70
 
 pause = 0
 fall_speed = 0
 
 objects = []
 while running:
-    score = speed // 5 - 6
-    # Т.к изначально speed = 30 , а 30/5 = 6 , то счёт начнётся с 6, поэтому вычтем 6 изначально.
+    score = speed // 5 - 14
+    # Т.к изначально speed = 70 , а 70/5 = 14 , то счёт начнётся с 14, поэтому вычтем 14 изначально.
     if pause > 0:
         pause += 1
-        if pause > fall_speed * 2:
+        if pause > fall_speed:
             end()
     for i in objects:
         if i.collide(runner.hitbox):
