@@ -77,7 +77,4 @@ class Player:
             # Отдаём на каждую картинку run 6 фреймов
             self.run_count += 1
             self.hitbox = (self.x + 4, self.y - 2, self.width - 24, self.height - 13)
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
-
-
-
+        # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
