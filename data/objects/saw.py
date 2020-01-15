@@ -1,6 +1,8 @@
 import pygame
 import os
 
+
+
 class Saw():
     img = [pygame.image.load(os.path.join('data\images', 'SAW0.png')),
            pygame.image.load(os.path.join('data\images', 'SAW1.png')),
@@ -14,6 +16,7 @@ class Saw():
         self.height = height
         self.hitbox = (x, y, width, height)
         self.count = 0
+        self.death_sound = pygame.mixer.Sound('data\sounds\death.wav')
 
     def draw(self, win):
         self.hitbox = (self.x + 5, self.y + 5, self.width - 12, self.height - 5)
@@ -27,5 +30,7 @@ class Saw():
         if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
             # Проверяем если y координата игрока сталкиваеться с чем либо.
             if rect[1] + rect[3] > self.hitbox[1]:
+                self.death_sound.play()
                 return True
+
             return False
