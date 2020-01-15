@@ -1,13 +1,12 @@
 import pygame
 import os
 import sys
-
-sys.path.append('data/objects')
 from data.objects.player import Player
 from data.objects.saw import Saw
 from data.objects.spike import Spike
-
 import random
+
+sys.path.append('data/objects')
 
 # Начало программы
 pygame.init()
@@ -15,8 +14,9 @@ pygame.init()
 w, h = 800, 447
 win = pygame.display.set_mode((w, h))
 pygame.display.set_caption('Side Scroller')
-
+hit_sound = pygame.mixer.Sound('data\sounds\hit.wav')
 bg = pygame.image.load('data\images\loop.png').convert()
+
 bg_x1 = 0
 bg_x2 = bg.get_width()
 
@@ -58,18 +58,23 @@ def end():
     speed = 70
     run = True
     while run:
+        keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if keys[pygame.K_RETURN]:
+                hit_sound.play()
                 run = False
         win.blit(bg, (0, 0))
         font_2 = pygame.font.SysFont('comicsans', 80)
+        font_3 = pygame.font.SysFont('comicsans', 30)
         previous_score = font_2.render('Рекорд:' + str(update_scores()), 1, (255, 255, 255))
-        win.blit(previous_score, (w / 2 - previous_score.get_width() / 2, 200))
+        win.blit(previous_score, (w / 2 - previous_score.get_width() / 2, 100))
         new_score = font_2.render('Счёт:' + str(score), 1, (255, 255, 255))
-        win.blit(new_score, (w / 2 - new_score.get_width() / 2, 320))
+        win.blit(new_score, (w / 2 - new_score.get_width() / 2, 220))
+        continue_text = font_3.render('Нажмите Enter чтобы начать новую игру', 1, (255, 255, 255))
+        win.blit(continue_text, (w / 2 - new_score.get_width() / 2, 340))
         pygame.display.update()
 
     score = 0
@@ -81,13 +86,13 @@ def start():
     intro_text = ["",
                   "Spacebar - прыжок",
                   "S - проскользить",
-                  'Нажмите любую кнопку мыши для запуска игры']
+                  'Нажмите на Enter чтобы начать игру']
     fon = pygame.image.load(os.path.join('data\images', 'loop.png'))
     win.blit(fon, (0, 0))
-    font = pygame.font.Font(None, 30)
+    font = pygame.font.SysFont('comicsans', 30)
     text_coord = 170
     for line in intro_text:
-        string_rendered = font.render(line, 1, pygame.Color('black'))
+        string_rendered = font.render(line, 1, pygame.Color('white'))
         intro_rect = string_rendered.get_rect()
         text_coord += 10
         intro_rect.top = text_coord
@@ -97,13 +102,14 @@ def start():
     global running
     while a:
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_RETURN]:
+                hit_sound.play()
                 running = True
                 a = False
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
         pygame.display.update()
 
 
@@ -158,10 +164,10 @@ while running:
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-        if not (runner.jumping):
+        if not runner.jumping:
             runner.jumping = True
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-        if not (runner.sliding):
+        if not runner.sliding:
             runner.sliding = True
     clock.tick(speed)
     redraw_window()
