@@ -2,8 +2,8 @@ import os
 import pygame
 import sys
 from data.objects.saw import Saw
-sys.path.append('data/objects')
 
+sys.path.append('data/objects')
 
 
 class Spike(Saw):

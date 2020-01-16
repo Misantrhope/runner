@@ -2,7 +2,7 @@ import pygame
 import os
 
 
-class Saw():
+class Saw:
     img = [pygame.image.load(os.path.join('data\images', 'SAW0.png')),
            pygame.image.load(os.path.join('data\images', 'SAW1.png')),
            pygame.image.load(os.path.join('data\images', 'SAW2.png')),
