@@ -13,7 +13,7 @@ pygame.init()
 
 w, h = 800, 447
 win = pygame.display.set_mode((w, h))
-pygame.display.set_caption('Side Scroller')
+pygame.display.set_caption('Runner')
 hit_sound = pygame.mixer.Sound('data\sounds\hit.wav')
 bg = pygame.image.load('data\images\loop.png').convert()
 
@@ -46,7 +46,7 @@ def redraw_window():
     for i in objects:
         i.draw(win)
     font = pygame.font.SysFont('comicsans', 30)
-    text = font.render('Score:' + str(score), 1, (255, 255, 255))
+    text = font.render('Счёт:' + str(score), 1, (255, 255, 255))
     win.blit(text, (700, 10))
     pygame.display.update()
 
@@ -55,7 +55,7 @@ def end():
     global pause, objects, speed, score
     pause = 0
     objects = []
-    speed = 70
+    speed = 100
     run = True
     while run:
         keys = pygame.key.get_pressed()
@@ -63,6 +63,7 @@ def end():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+                quit()
             if keys[pygame.K_RETURN]:
                 hit_sound.play()
                 run = False
@@ -117,19 +118,19 @@ def start():
 start()
 runner = Player(200, 313, 64, 64)
 pygame.time.set_timer(pygame.USEREVENT + 1, 500)
-pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(3000, 5000))
-speed = 70
+pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(1500, 1750))
+speed = 100
 
 pause = 0
 fall_speed = 0
 
 objects = []
 while running:
-    score = speed // 5 - 14
-    # Т.к изначально speed = 70 , а 70/5 = 14 , то счёт начнётся с 14, поэтому вычтем 14 изначально.
+    score = speed // 5 - 20
+    # Т.к изначально speed = 100 , а 100/5 = 20 , то счёт начнётся с 20, поэтому вычтем 20 изначально.
     if pause > 0:
         pause += 1
-        if pause > fall_speed:
+        if pause > fall_speed // 2:
             end()
     for i in objects:
         if i.collide(runner.hitbox):
@@ -157,7 +158,7 @@ while running:
         if event.type == pygame.USEREVENT + 2:
             r = random.randrange(0, 2)
             if r == 0:
-                objects.append(Saw(810, 310, 64, 64))
+                objects.append(Saw(810, 326, 48, 48))
             else:
                 objects.append(Spike(810, 0, 48, 320))
 
