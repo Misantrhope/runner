@@ -16,6 +16,7 @@ win = pygame.display.set_mode((w, h))
 pygame.display.set_caption('Runner')
 hit_sound = pygame.mixer.Sound('data\sounds\hit.wav')
 bg = pygame.image.load('data\images\loop.png').convert()
+music = pygame.mixer.music.load('data\sounds\music.wav')
 
 bg_x1 = 0
 bg_x2 = bg.get_width()
@@ -52,6 +53,7 @@ def redraw_window():
 
 
 def end():
+    pygame.mixer.music.stop()
     global pause, objects, speed, score
     pause = 0
     objects = []
@@ -65,6 +67,7 @@ def end():
                 pygame.quit()
                 quit()
             if keys[pygame.K_RETURN]:
+                pygame.mixer.music.play(-1)
                 hit_sound.play()
                 run = False
         win.blit(bg, (0, 0))
@@ -105,6 +108,7 @@ def start():
         for event in pygame.event.get():
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RETURN]:
+                pygame.mixer.music.play(-1)
                 hit_sound.play()
                 running = True
                 a = False
@@ -133,6 +137,7 @@ while running:
         pause += 1
         if pause > fall_speed // 2:
             end()
+
     for i in objects:
         if i.collide(runner.hitbox):
             runner.game_over = True
