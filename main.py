@@ -119,6 +119,7 @@ start()
 runner = Player(200, 313, 64, 64)
 pygame.time.set_timer(pygame.USEREVENT + 1, 500)
 pygame.time.set_timer(pygame.USEREVENT + 2, random.randrange(1500, 1750))
+# Диапазон генерации
 speed = 100
 
 pause = 0
@@ -142,12 +143,14 @@ while running:
         i.x -= 1.4
         if i.x < -i.width * -1:
             objects.pop(objects.index(i))
+            # Удаление обьектов с экрана
     bg_x1 -= 1.4
     bg_x2 -= 1.4
     if bg_x1 < bg.get_width() * - 1:
         bg_x1 = bg.get_width()
     if bg_x2 < bg.get_width() * - 1:
         bg_x2 = bg.get_width()
+        # Прокрутка экрана
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -161,6 +164,7 @@ while running:
                 objects.append(Saw(810, 326, 48, 48))
             else:
                 objects.append(Spike(810, 0, 48, 320))
+            # Генератор обьектов
 
     keys = pygame.key.get_pressed()
 

@@ -67,7 +67,6 @@ class Player:
                 self.run_count = 0
                 self.hitbox = (self.x + 4, self.y, self.width - 24, self.height - 10)
             win.blit(self.slide[self.slide_count // 10], (self.x, self.y))
-            # Отдаём на каждую картинку slide 10 фреймов
             self.slide_count += 1
 
         else:
