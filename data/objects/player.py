@@ -86,5 +86,5 @@ class Player:
             # Обновляем счётчик
             self.hitbox = (self.x + 4, self.y - 2, self.width - 24, self.height - 13)
             # Hitbox при нормальном состояние
-        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+        # pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
         # Показывает hitbox персонажа
